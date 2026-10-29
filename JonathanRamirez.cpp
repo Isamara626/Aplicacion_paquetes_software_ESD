@@ -42,7 +42,7 @@ void registrarPaquete(nodoPaquete*& inicio);
 void mostrarPaquete(nodoPaquete* inicio);
 nodoPaquete* buscarPaquete(nodoPaquete* inicio,int codigo);
 void registrarSolicitud(nodoPaquete*inicio, nodoSolicitud*& frente, nodoSolicitud*&fin);
-
+void mostrarSolicitudes(nodoSolicitud*frente, nodoPaquete*inicio);
 
 int main(){
   nodoPaquete* inicio = nullptr;
@@ -56,9 +56,10 @@ int main(){
    cout << "\n===== GESTOR DE PAQUETES =====\n";
         cout << "1. Registrar paquete\n";
         cout << "2. Mostrar paquetes\n";
-        cout<< "3. Buscar paquete (codigo)\n";
-        cout<< "4.Registrar solicitud\n";
-        cout << "5. Salir\n";
+        cout <<  "3. Buscar paquete (codigo)\n";
+        cout <<  "4. Registrar solicitud\n";
+        cout <<  "5. Mostrar solicitudes\n";
+        cout <<  "6. Salir\n";
         cout << "Seleccione una opcion: ";
         cin >> opcion;
         
@@ -89,14 +90,20 @@ int main(){
 	if(opcion == 4){
 	   registrarSolicitud(inicio,frente,fin);	
 	}
-	}while(opcion!= 5);
+	
+	if(opcion == 5){
+	   mostrarSolicitudes(frente,inicio);	
+	}
+	}while(opcion!= 6);
 	
 	
 return 0;	
 }
+
 //========
 //VANESSA
 //========
+
 //METODO PARA REGISTRAR UN PAQUETE
 void registrarPaquete(nodoPaquete*& inicio){
 	
@@ -174,12 +181,11 @@ nodoPaquete* buscarPaquete(nodoPaquete *inicio,int codigo){
 }
 
 //==========================
-//Isamara
+//Isamara *-*
 //==========================
 
 
 //METODO PARA REGISTRAR SOLICITUDES DE INSTALACION Y ELIMINACION
-
 void registrarSolicitud(nodoPaquete*inicio, nodoSolicitud*& frente, nodoSolicitud*&fin){
 	
 	int codigo;
@@ -193,19 +199,16 @@ void registrarSolicitud(nodoPaquete*inicio, nodoSolicitud*& frente, nodoSolicitu
     nodoPaquete*encontrado = buscarPaquete(inicio,codigo);
     
     //VERIFICAMOS SI EL PAQUETE EXISTE
-    
     if(encontrado == nullptr){
     	cout<<"ERROR: EL PAQUETE NO EXISTE."<<endl;
-    	
     	return;
 	}
 	
 	//MOSTRAMOS OPCIONES PARA PODER REGISTRAR UNA SOLICITUD
-	
-    	cout<<"\n====REGISTRAR SOLICITUD===="<<endl;
-		cout<<"\n1. Solicitud de instalacion"<<endl;
-		cout<<"\n2. Solicitud de eliminacion"<<endl;
-		cout<<"\nSeleccione una opcion"<<endl;
+    cout << "\n==== REGISTRAR SOLICITUD ====\n";
+		cout<<"1. Solicitud de instalacion\n";
+		cout<<"2. Solicitud de eliminacion\n";
+		cout<<"Seleccione una opcion: ";
 		cin>>tipo;
     
     //VERIFICAMOS QUE LA OPCION SEA LA CORRECTA
@@ -218,7 +221,6 @@ void registrarSolicitud(nodoPaquete*inicio, nodoSolicitud*& frente, nodoSolicitu
 	nodoSolicitud*nuevo = new nodoSolicitud;
 	
 	//GUARDAMOS LOS DATOS DE LA SOLICITUD
-	
     nuevo->dato.codigo = codigo;
 	nuevo->dato.tipo = tipo;
     nuevo->siguiente = nullptr;
@@ -237,7 +239,52 @@ void registrarSolicitud(nodoPaquete*inicio, nodoSolicitud*& frente, nodoSolicitu
 	}
 	
 	//MOSTRAMOS UN MENSAJE DE CONFIRMACION
-	cout<<"\n SU SOLICITUD SE REGISTRO CORRECTAMENTE."<<endl;
+	cout<<"SOLICITUD REGISTRADA CORRECTAMENTE."<<endl;
+	
 }
+
+//METODO MOSTRAR SOLICITUDES REGISTRADAS
+void mostrarSolicitudes(nodoSolicitud*frente, nodoPaquete*inicio){
+	
+	nodoSolicitud* auxiliar = frente;
+	
+	if(auxiliar==nullptr){
+		cout<<"\nNO HAY SOLICITUDES REGISTRADAS"<<endl;
+		return;
+	}
+	
+	while(auxiliar!=nullptr){
+		
+		//MOSTRAMOS LOS DATOS
+		cout<<"\n====SOLICITUDES REGISTRADAS===="<<endl;
+		cout<<"Codigo: "<<auxiliar->dato.codigo<<endl;
+		
+		if(auxiliar->dato.tipo==1){
+			cout<<"Tipo: INSTALACION "<<endl;
+		}
+		else{
+		    cout<<"Tipo: ELIMINACION "<<endl;	
+		}
+		
+		//BUSCAMOS EL PAQUETE PARA MOSTRAR SU ESTADO
+		nodoPaquete*encontrado = buscarPaquete(inicio,auxiliar->dato.codigo);
+		
+		if(encontrado!= nullptr){
+			cout<<"Nombre: "<<encontrado->dato.nombre<<endl;
+			
+			if(encontrado->dato.instalado== true) {
+				cout<<"Estado: INSTALADO"<<endl;
+			}
+			else{
+				cout<<"Estado: NO INSTALADO"<<endl;
+			}
+		}
+		else{
+			cout<<"PAQUETE NO ENCONTRADO"<<endl;
+		}
+		auxiliar = auxiliar->siguiente;
+	}
+}
+
 
 
