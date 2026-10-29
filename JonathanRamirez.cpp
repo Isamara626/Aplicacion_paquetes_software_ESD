@@ -94,8 +94,9 @@ int main(){
 	
 return 0;	
 }
-
-
+//========
+//VANESSA
+//========
 //METODO PARA REGISTRAR UN PAQUETE
 void registrarPaquete(nodoPaquete*& inicio){
 	
@@ -181,7 +182,8 @@ nodoPaquete* buscarPaquete(nodoPaquete *inicio,int codigo){
 
 void registrarSolicitud(nodoPaquete*inicio, nodoSolicitud*& frente, nodoSolicitud*&fin){
 	
-	int codigo, tipo;
+	int codigo;
+	int tipo;
 	
 	//PEDIMOS EL CODIGO DEL PAQUETE
     cout<<"\nIngrese el codigo del paquete."<<endl;
