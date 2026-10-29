@@ -1,6 +1,7 @@
 #include<iostream>
 using namespace std;
 
+
 //COMENZADO PRUEBA 
 //CREAMOS LA ESTRUCTURA QUE ALMACENARA LOS DATOS DEL PAQUETE DE SOFWARE
 
@@ -11,11 +12,27 @@ struct paquete{
 	bool instalado;
 };
 
+//ESTRUCTURA QUE ALMACENA LOS DATOS DE LA SOLICITUD
+struct solicitud{
+	int codigo;
+	int tipo; //1 INSTALACION, 2 ELIMINACION.
+	
+};
+
+
 //CREAMOS EL NODO A LA LISTA ENLAZADA
 struct nodoPaquete{
 	paquete dato;
 	nodoPaquete* siguiente;
 };
+
+//CREAMOS EL NODO PARA LA COLA DE SOLICITUDES
+struct nodoSolicitud{
+	solicitud dato;
+	nodoSolicitud*siguiente;
+};
+
+
 
 //ACA CREE EL PUNTERO DE INICIO
 //nodoPaquete *inicio = nullptr;
@@ -24,9 +41,13 @@ struct nodoPaquete{
 void registrarPaquete(nodoPaquete*& inicio);
 void mostrarPaquete(nodoPaquete* inicio);
 nodoPaquete* buscarPaquete(nodoPaquete* inicio,int codigo);
+void registrarSolicitud(nodoPaquete*inicio, nodoSolicitud*& frente, nodoSolicitud*&fin);
+
 
 int main(){
   nodoPaquete* inicio = nullptr;
+  nodoSolicitud* frente = nullptr;
+  nodoSolicitud* fin = nullptr;
   int opcion;
   
   do{
@@ -36,7 +57,8 @@ int main(){
         cout << "1. Registrar paquete\n";
         cout << "2. Mostrar paquetes\n";
         cout<< "3. Buscar paquete (codigo)\n";
-        cout << "4. Salir\n";
+        cout<< "4.Registrar solicitud\n";
+        cout << "5. Salir\n";
         cout << "Seleccione una opcion: ";
         cin >> opcion;
         
@@ -50,7 +72,7 @@ int main(){
 		int codigo;
 		cout << "Ingrese el codigo del paquete: "<<endl;
 		cin >> codigo;
-		
+	
 		
 		
 		//CREAMOS UN PUNTERO QUE GUARDARA EL RETORNOO DE LA FUNCION
@@ -63,7 +85,11 @@ int main(){
 			cout<<"\nEl paquete no existe"<<endl;
 		}
 	}
-	}while(opcion!= 4);
+		
+	if(opcion == 4){
+	   registrarSolicitud(inicio,frente,fin);	
+	}
+	}while(opcion!= 5);
 	
 	
 return 0;	
@@ -144,6 +170,72 @@ nodoPaquete* buscarPaquete(nodoPaquete *inicio,int codigo){
 		auxiliar = auxiliar->siguiente;
 	}
 	return nullptr;
+}
+
+//==========================
+//Isamara
+//==========================
+
+
+//METODO PARA REGISTRAR SOLICITUDES DE INSTALACION Y ELIMINACION
+
+void registrarSolicitud(nodoPaquete*inicio, nodoSolicitud*& frente, nodoSolicitud*&fin){
+	
+	int codigo, tipo;
+	
+	//PEDIMOS EL CODIGO DEL PAQUETE
+    cout<<"\nIngrese el codigo del paquete."<<endl;
+    cin>>codigo;
+    
+    //BUSCAMOS EL PAQUETE
+    nodoPaquete*encontrado = buscarPaquete(inicio,codigo);
+    
+    //VERIFICAMOS SI EL PAQUETE EXISTE
+    
+    if(encontrado == nullptr){
+    	cout<<"ERROR: EL PAQUETE NO EXISTE."<<endl;
+    	
+    	return;
+	}
+	
+	//MOSTRAMOS OPCIONES PARA PODER REGISTRAR UNA SOLICITUD
+	
+    	cout<<"\n====REGISTRAR SOLICITUD===="<<endl;
+		cout<<"\n1. Solicitud de instalacion"<<endl;
+		cout<<"\n2. Solicitud de eliminacion"<<endl;
+		cout<<"\nSeleccione una opcion"<<endl;
+		cin>>tipo;
+    
+    //VERIFICAMOS QUE LA OPCION SEA LA CORRECTA
+    if(tipo!=1 && tipo!=2){
+    	cout<<"\nOpcion correcta."<<endl;
+    	return;
+	}
+	
+	//CREAMOS UN NUEVO NODO PARA LA SOLICITUD
+	nodoSolicitud*nuevo = new nodoSolicitud;
+	
+	//GUARDAMOS LOS DATOS DE LA SOLICITUD
+	
+    nuevo->dato.codigo = codigo;
+	nuevo->dato.tipo = tipo;
+    nuevo->siguiente = nullptr;
+    
+    //VERIFICAR SI LA COLA ESTA VACIA
+    if(frente == nullptr){
+    	
+    	//EL NUEVO NODO SERA EL PRIMERO Y EL ULTIMO
+    	frente = nuevo;
+    	fin = nuevo;	
+	}
+	else{
+		//AGREGAMOS LA SOLICITUD AL FINAL DE LA COLA
+		fin->siguiente = nuevo;
+	    fin = nuevo;
+	}
+	
+	//MOSTRAMOS UN MENSAJE DE CONFIRMACION
+	cout<<"\n SU SOLICITUD SE REGISTRO CORRECTAMENTE."<<endl;
 }
 
 
