@@ -43,6 +43,8 @@ void mostrarPaquete(nodoPaquete* inicio);
 nodoPaquete* buscarPaquete(nodoPaquete* inicio,int codigo);
 void registrarSolicitud(nodoPaquete*inicio, nodoSolicitud*& frente, nodoSolicitud*&fin);
 void mostrarSolicitudes(nodoSolicitud*frente, nodoPaquete*inicio);
+void organizarPrioridades(nodoSolicitud*&frente,nodoSolicitud*&fin);
+void procesarPendiente(nodoPaquete*inicio, nodoSolicitud*&frente, nodoSolicitud*&fin);
 
 int main(){
   nodoPaquete* inicio = nullptr;
@@ -59,7 +61,9 @@ int main(){
         cout <<  "3. Buscar paquete (codigo)\n";
         cout <<  "4. Registrar solicitud\n";
         cout <<  "5. Mostrar solicitudes\n";
-        cout <<  "6. Salir\n";
+        cout <<  "6. Organizar prioridades\n";
+        cout <<  "7. Procesar solicitud pendiente\n";
+        cout <<  "8. Salir\n";
         cout << "Seleccione una opcion: ";
         cin >> opcion;
         
@@ -94,15 +98,22 @@ int main(){
 	if(opcion == 5){
 	   mostrarSolicitudes(frente,inicio);	
 	}
+	
+	if(opcion == 6){
+	   organizarPrioridades(frente,fin);	
+	}
+	if(opcion == 7){
+	   procesarPendiente(inicio,frente,fin);	
+	}
 	}while(opcion!= 6);
 	
 	
 return 0;	
 }
 
-//========
-//VANESSA
-//========
+//==========================================
+//JONATHAN
+//==========================================
 
 //METODO PARA REGISTRAR UN PAQUETE
 void registrarPaquete(nodoPaquete*& inicio){
@@ -285,6 +296,152 @@ void mostrarSolicitudes(nodoSolicitud*frente, nodoPaquete*inicio){
 		auxiliar = auxiliar->siguiente;
 	}
 }
+//METODO PARA ORGANIZAR PRIORIDADES
+void organizarPrioridades(nodoSolicitud*&frente,nodoSolicitud*&fin){
+	
+	//VERIFICAMOS SI LA COLA ESTA VACIA
+	if(frente== nullptr){
+		cout<<"\nNo hay solicitudes pendientes"<<endl;
+		return;
+	}
+	
+	//CREAMOS LOS PUNTEROS DE LAS PRIORIDADES
+	nodoSolicitud*alta = nullptr;
+	nodoSolicitud*finAlta=nullptr;
+	nodoSolicitud*media = nullptr;
+	nodoSolicitud*finMedia=nullptr;
+	nodoSolicitud*baja= nullptr;
+	nodoSolicitud*finBaja=nullptr;
+	nodoSolicitud*auxiliar=frente;
+	
+	//RECORREMOS LAS SOLICITUDES
+	while(auxiliar!=nullptr){
+		int prioridad;
+		cout<<"\nCodigo: "<<auxiliar->dato.codigo<<endl;
+	
+	
+	  //PEDIMOS LA PRIORIDAD
+	  do{
+		 cout<<"1. BAJA"<<endl;
+		 cout<<"2. MEDIA"<<endl;
+		 cout<<"3. ALTA"<<endl;
+		 cout<<"Seleccione la prioridad: ";
+		 cin>>prioridad;
+		 
+		   if(prioridad<1 || prioridad>3){
+		     cout<<"PRIORIDAD INCORRECTA"<<endl;
+		   }
+		   
+		}while(prioridad<1 || prioridad>3);
+		
+		//GUARDAMOS EL SIGUIENTE NODO
+		nodoSolicitud*siguiente=auxiliar->siguiente;
+		auxiliar->siguiente=nullptr;
+		
+		//PRIORIDAD ALTA
+		if(prioridad==3){
+		    if(alta==nullptr){
+		    	alta=auxiliar;
+		    	finAlta=auxiliar;
+		    	
+			}else{
+				finAlta->siguiente=auxiliar;
+				finAlta=auxiliar;
+			}
+	   }
+	   
+	   //PRIORIDAD MEDIA
+	   if(prioridad==2){
+		    if(media==nullptr){
+		    	media=auxiliar;
+		    	finMedia=auxiliar;
+		    	
+			}else{
+				finMedia->siguiente=auxiliar;
+				finMedia=auxiliar;
+			}
+	   }
+	   
+	   //PRIORIDAD BAJA
+	   if(prioridad==1){
+		    if(baja==nullptr){
+		    	baja=auxiliar;
+		    	finBaja=auxiliar;
+		    	
+			}else{
+				finBaja->siguiente=auxiliar;
+				finBaja=auxiliar;
+			}
+	   }
+	   auxiliar=siguiente;
+	}
+	//VOLVEMOS A UNIR LA COLA SEGUN PRIORIDAD
+	frente=nullptr;
+	fin=nullptr;
+	
+	//PRIMERO PRIORIDAD ALTA
+	if(alta!=nullptr){
+    	frente=alta;
+		fin=finAlta;
+	}
+	
+	//AHORA PRIORIDAD MEDIA
+	if(media!=nullptr){
+		if(frente==nullptr){
+			frente=media;
+			
+		}else{
+			fin->siguiente=media;
+		}
+    	fin=finMedia;
+	}
+	//POR ULTIMO PRIORIDAD BAJA
+	if(baja!=nullptr){
+		if(frente==nullptr){
+			frente=baja;
+		}else{
+			fin->siguiente=baja;
+		}
+		fin=finBaja;
+	}
+	cout<<"\nSolicitudes organizadas por prioridad: "<<endl;
+}
+//METODO PARA PROCESAR UNA SOLICITUD PENDIENTE
+void procesarPendiente(nodoPaquete*inicio, nodoSolicitud*&frente, nodoSolicitud*&fin){
+	
+	//VERIFICAMOS SI LA COLA ESTA VACIA
+	if(frente==nullptr){
+		cout<<" \nNo hay solicitudes pendientes"<<endl;
+		return;
+	}
+	//TOMAMOS LA PRIMERA SOLICITUD
+	nodoSolicitud*auxiliar=frente;
+	
+	//BUSCAMOS EL PAQUETE
+	nodoPaquete*encontrado=buscarPaquete(inicio,auxiliar->dato.codigo);
+	if(encontrado!=nullptr){
+		cout<<"\nCodigo: "<<auxiliar->dato.codigo<<endl;
+		
+		//PROCESAMOS LA INSTALACION
+		if(auxiliar->dato.tipo==1){
+			encontrado->dato.instalado=false;
+			cout<<"Solicitud: ELIMINACION "<<endl;
+			cout<<"Paquete eliminado correctamente."<<endl;
+		}
+	}else{
+		cout<<"ERROR: El paquete no existe."<<endl;	
+	}
+	//QUITAMOS LA SOLICITUD DE ENFRENTE
+	frente=frente->siguiente;
+	
+	//VERIFICAMOS SI LA COLA QUEDO VACIA
+	if(frente==nullptr){
+		fin=nullptr;
+	}
+	//LIBERAMOS MEMORIA
+	delete auxiliar;
+}
+
 
 
 
