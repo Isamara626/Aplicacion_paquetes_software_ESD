@@ -211,10 +211,10 @@ void registrarSolicitud(nodoPaquete*inicio, nodoSolicitud*& frente, nodoSolicitu
     //BUSCAMOS EL PAQUETE
     nodoPaquete*encontrado = buscarPaquete(inicio,codigo);
     
-    //VERIFICAMOS SI EL PAQUETE EXISTE
+    //VERIFICAMOS SI EL PAQUETE EXISTE          
     if(encontrado == nullptr){
     	cout<<"ERROR: EL PAQUETE NO EXISTE."<<endl;
-    	return;
+    	return;                                
 	}
 	
 	//MOSTRAMOS OPCIONES PARA PODER REGISTRAR UNA SOLICITUD
@@ -232,6 +232,16 @@ void registrarSolicitud(nodoPaquete*inicio, nodoSolicitud*& frente, nodoSolicitu
 	
 	//CREAMOS UN NUEVO NODO PARA LA SOLICITUD
 	nodoSolicitud*nuevo = new nodoSolicitud;
+	
+	//VERIFICAMOS SI LA SOLICITUD YA EXISTE                           //CODIGO ARREGLADO
+	nodoSolicitud*auxiliar=frente;
+	while(auxiliar!=nullptr){
+		if(auxiliar->dato.codigo==codigo && auxiliar->dato.tipo==tipo){
+			cout<<"\nERROR: ESTA SOLICITUD YA ESTA REGISTRADA."<<endl;
+			return;
+		}
+		auxiliar=auxiliar->siguiente;                      //HASTA AQUI*-*
+	}
 	
 	//GUARDAMOS LOS DATOS DE LA SOLICITUD
     nuevo->dato.codigo = codigo;
@@ -424,18 +434,17 @@ void procesarPendiente(nodoPaquete*inicio, nodoSolicitud*&frente, nodoSolicitud*
 	if(encontrado!=nullptr){
 		cout<<"\nCodigo: "<<auxiliar->dato.codigo<<endl;
 		
-		//PROCESAMOS LA INSTALACION    //ACA SE HICIERON CAMBIOS POR JONATHAN..
-		if(auxiliar->dato.tipo==1){
-			encontrado->dato.instalado=false;
+		//PROCESAMOS LA INSTALACION      
+		if(auxiliar->dato.tipo==1){            //SE REALIZARON CAMBIOS
+			encontrado->dato.instalado=true;
 			cout<<"Solicitud: INSTALACION "<<endl;
 			cout<<"Paquete instalado correctamente."<<endl;
-			encontrado->dato.instalado = true;
 		}
 	}else  
 	    if(auxiliar->dato.tipo==2){
 	    	encontrado->dato.instalado = false;
 	    	cout<<"Solicitud: ELIMINACION"<<endl;
-		cout<<"paquete eliminado correctamente"<<endl;	//HASTA ACA
+		cout<<"paquete eliminado correctamente."<<endl;	//HASTA ACA
 	}
 	//QUITAMOS LA SOLICITUD DE ENFRENTE
 	frente=frente->siguiente;
