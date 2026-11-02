@@ -130,8 +130,10 @@ void registrarPaquete(nodoPaquete*& inicio){
 	nodoPaquete* encontrado = buscarPaquete(inicio,nuevo->dato.codigo);
 	if(encontrado != nullptr){
 		cout<<"ERROR: YA EXISTE UN PAQUETE CON ESE CODIGO.."<<endl;
+		delete nuevo;
+		return;
 		
-		//CONSULTAR ACA DUDA //
+		//CONSULTAR ACA DUDA //SOBRE SI PODEMOS UTILIZAR EL DELETE
 	}
 	
 	cout<<"Ingrese el nombre: "<<endl;
@@ -422,14 +424,18 @@ void procesarPendiente(nodoPaquete*inicio, nodoSolicitud*&frente, nodoSolicitud*
 	if(encontrado!=nullptr){
 		cout<<"\nCodigo: "<<auxiliar->dato.codigo<<endl;
 		
-		//PROCESAMOS LA INSTALACION
+		//PROCESAMOS LA INSTALACION    //ACA SE HICIERON CAMBIOS POR JONATHAN..
 		if(auxiliar->dato.tipo==1){
 			encontrado->dato.instalado=false;
-			cout<<"Solicitud: ELIMINACION "<<endl;
-			cout<<"Paquete eliminado correctamente."<<endl;
+			cout<<"Solicitud: INSTALACION "<<endl;
+			cout<<"Paquete instalado correctamente."<<endl;
+			encontrado->dato.instalado = true;
 		}
-	}else{
-		cout<<"ERROR: El paquete no existe."<<endl;	
+	}else  
+	    if(auxiliar->dato.tipo==2){
+	    	encontrado->dato.instalado = false;
+	    	cout<<"Solicitud: ELIMINACION"<<endl;
+		cout<<"paquete eliminado correctamente"<<endl;	//HASTA ACA
 	}
 	//QUITAMOS LA SOLICITUD DE ENFRENTE
 	frente=frente->siguiente;
