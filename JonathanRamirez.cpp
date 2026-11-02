@@ -105,7 +105,7 @@ int main(){
 	if(opcion == 7){
 	   procesarPendiente(inicio,frente,fin);	
 	}
-	}while(opcion!= 6);
+	}while(opcion!= 8);
 	
 	
 return 0;	
